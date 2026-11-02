@@ -134,30 +134,31 @@ function Conversation({ c, onBack }: { c: (typeof chats)[number]; onBack: () => 
   };
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-3 px-4 py-3">
+      <div className="flex items-center gap-3 border-b bg-background/90 px-4 py-3 backdrop-blur">
         <button onClick={onBack}><ChevronLeft className="h-7 w-7" /></button>
         <Avatar src={c.img} size={50} online />
         <div className="flex-1"><p className="text-lg font-medium">{c.name}</p><p className="text-sm text-muted-foreground">Online</p></div>
-        <Phone className="h-6 w-6" /><Video className="ml-3 h-6 w-6" /><MoreHorizontal className="ml-3 h-6 w-6" />
+        <div className="flex items-center gap-1">{[Phone, Video, MoreHorizontal].map((I, k) => <button key={k} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted"><I className="h-5 w-5" /></button>)}</div>
       </div>
-      <div className="flex-1 space-y-5 overflow-y-auto px-4 py-3">
+      <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+        <div className="flex justify-center"><span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">Today</span></div>
         {msgs.map((m, i) =>
           m.voice ? (
-            <div key={i} className="flex items-center gap-3">
-              <Avatar src={c.img} size={40} online />
-              <div className="flex-1 rounded-3xl bg-primary px-4 py-3 text-primary-foreground">
+            <div key={i} className="flex items-end gap-2">
+              <Avatar src={c.img} size={32} />
+              <div className="w-72 max-w-[75%] rounded-3xl rounded-bl-md bg-bubble px-3 py-2.5 text-foreground">
                 <div className="flex items-center gap-3">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-background text-foreground"><Play className="h-5 w-5 fill-current" /></span>
-                  <div className="flex flex-1 items-center gap-[3px]">
-                    {Array.from({ length: 34 }).map((_, k) => <span key={k} className="w-[2px] rounded bg-primary-foreground" style={{ height: 6 + ((k * 7) % 18) }} />)}
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"><Play className="h-5 w-5 fill-current" /></span>
+                  <div className="flex flex-1 items-center justify-between overflow-hidden">
+                    {Array.from({ length: 28 }).map((_, k) => <span key={k} className="w-[3px] shrink-0 rounded bg-primary" style={{ height: 6 + ((k * 7) % 18) }} />)}
                   </div>
                 </div>
-                <div className="mt-1 flex justify-between text-sm"><span>1:10</span><span className="flex items-center gap-1 opacity-90">{m.time}<Check className="h-4 w-4" /></span></div>
+                <div className="mt-1 flex justify-between pl-[52px] text-xs text-muted-foreground"><span>1:10</span><span className="flex items-center gap-1">{m.time}<Check className="h-4 w-4" /></span></div>
               </div>
             </div>
           ) : (
             <div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[80%] rounded-3xl px-5 py-3 text-[17px] leading-snug ${m.me ? "bg-primary text-primary-foreground" : "rounded-bl-md bg-bubble text-foreground"}`}>
+              <div className={`max-w-[75%] rounded-3xl px-4 py-2.5 text-[15px] leading-relaxed ${m.me ? "rounded-br-md bg-primary text-primary-foreground" : "rounded-bl-md bg-bubble text-foreground"}`}>
                 {m.text}
                 <div className={`mt-1 flex items-center justify-end gap-1 text-xs ${m.me ? "opacity-90" : "text-muted-foreground"}`}>{m.time}{m.me && <CheckCheck className="h-4 w-4" />}</div>
               </div>
@@ -165,13 +166,13 @@ function Conversation({ c, onBack }: { c: (typeof chats)[number]; onBack: () => 
           ),
         )}
       </div>
-      <div className="flex items-center gap-2 px-3 pb-4 pt-2">
+      <div className="flex items-center gap-2 border-t bg-background px-3 pb-4 pt-3">
         <button className="flex h-12 w-12 items-center justify-center rounded-full border bg-muted"><Plus className="h-6 w-6" /></button>
-        <div className="flex flex-1 items-center gap-2 rounded-full border bg-muted px-4 py-3">
+        <div className="flex flex-1 items-center gap-2 rounded-full border bg-muted px-4 py-2.5">
           <input value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder="Message..." className="min-w-0 flex-1 bg-transparent text-lg outline-none" />
           <Smile className="h-6 w-6" /><span className="h-6 w-px bg-border" /><Mic className="h-6 w-6" />
         </div>
-        <button onClick={send} className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground"><Send className="h-6 w-6" /></button>
+        <button onClick={send} className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground"><Send className="h-5 w-5" /></button>
       </div>
     </div>
   );
