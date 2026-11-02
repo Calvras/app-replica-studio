@@ -321,8 +321,20 @@ function CallsPage({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
 // ─── Settings ─────────────────────────────────────────────────────────────────
 type SettingsSection = "main" | "notifications" | "privacy" | "appearance";
 
+// Scoped tokens for the settings warm-light surface
+const S = {
+  page:    "bg-[#f0ebe4]",
+  card:    "bg-white",
+  divider: "divide-[#ebebeb]",
+  border:  "border-[#e4e0db]",
+  icon:    "text-[#444]",
+  label:   "text-[#111]",
+  sub:     "text-[#888]",
+  chevron: "text-[#bbb]",
+};
+
 function SettingsPage({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
-  const [section, setSection] = useState<SettingsSection>("main");
+  const [section,    setSection]    = useState<SettingsSection>("main");
   const [notifSound, setNotifSound] = useState(true);
   const [notifVib,   setNotifVib]   = useState(true);
   const [notifPrev,  setNotifPrev]  = useState(true);
@@ -342,144 +354,139 @@ function SettingsPage({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
 
       {/* ── Notifications ── */}
       {section === "notifications" && (
-        <SettingsSubPage title="Notifications" onBack={goBack} tab={tab} onTab={onTab}>
-          <SCard>
-            <STRow icon={Volume2}  label="Message sound"   value={notifSound} onChange={setNotifSound} />
-            <STRow icon={Vibrate}  label="Vibration"        value={notifVib}   onChange={setNotifVib}   />
-            <STRow icon={Eye}      label="Show preview"     value={notifPrev}  onChange={setNotifPrev}  />
-            <STRow icon={BellOff}  label="Mute all"         value={muteAll}    onChange={setMuteAll}    />
-          </SCard>
-          <SCard>
-            <STRow icon={Phone}    label="Ringtone"         value={true}       onChange={() => {}}      />
-            <STRow icon={Vibrate}  label="Vibrate on call"  value={true}       onChange={() => {}}      />
-          </SCard>
-        </SettingsSubPage>
+        <SPage title="Notifications" onBack={goBack} tab={tab} onTab={onTab}>
+          <SWCard>
+            <SWTRow icon={Volume2} label="Message sound"   value={notifSound} onChange={setNotifSound} />
+            <SWTRow icon={Vibrate} label="Vibration"        value={notifVib}   onChange={setNotifVib}   />
+            <SWTRow icon={Eye}     label="Show preview"     value={notifPrev}  onChange={setNotifPrev}  />
+            <SWTRow icon={BellOff} label="Mute all"         value={muteAll}    onChange={setMuteAll}    />
+          </SWCard>
+          <SWCard>
+            <SWTRow icon={Phone}   label="Ringtone"         value={true}       onChange={() => {}}      />
+            <SWTRow icon={Vibrate} label="Vibrate on call"  value={true}       onChange={() => {}}      />
+          </SWCard>
+        </SPage>
       )}
 
       {/* ── Privacy ── */}
       {section === "privacy" && (
-        <SettingsSubPage title="Privacy" onBack={goBack} tab={tab} onTab={onTab}>
-          <SCard>
-            <STRow icon={Clock}       label="Last seen"          value={lastSeen}  onChange={setLastSeen}  />
-            <STRow icon={CheckCheck}  label="Read receipts"      value={receipts}  onChange={setReceipts}  />
-            <STRow icon={Eye}         label="Online status"      value={onlineSt}  onChange={setOnlineSt}  />
-          </SCard>
-          <SCard>
-            <STRow icon={Fingerprint} label="Biometric lock"     value={biometric} onChange={setBiometric} />
-            <SLRow icon={Lock}        label="Two-step verification" />
-            <SLRow icon={Shield}      label="Blocked contacts"     badge="3" />
-          </SCard>
-          <SCard>
-            <SLRow icon={Database}    label="Manage storage" />
-            <SLRow icon={Archive}     label="Chat backup" />
-          </SCard>
-        </SettingsSubPage>
+        <SPage title="Privacy" onBack={goBack} tab={tab} onTab={onTab}>
+          <SWCard>
+            <SWTRow icon={Clock}       label="Last seen"             value={lastSeen}  onChange={setLastSeen}  />
+            <SWTRow icon={CheckCheck}  label="Read receipts"         value={receipts}  onChange={setReceipts}  />
+            <SWTRow icon={Eye}         label="Online status"         value={onlineSt}  onChange={setOnlineSt}  />
+          </SWCard>
+          <SWCard>
+            <SWTRow icon={Fingerprint} label="Biometric lock"        value={biometric} onChange={setBiometric} />
+            <SWLRow icon={Lock}        label="Two-step verification" />
+            <SWLRow icon={Shield}      label="Blocked contacts"      badge="3" />
+          </SWCard>
+          <SWCard>
+            <SWLRow icon={Database} label="Manage storage" />
+            <SWLRow icon={Archive}  label="Chat backup" />
+          </SWCard>
+        </SPage>
       )}
 
       {/* ── Appearance ── */}
       {section === "appearance" && (
-        <SettingsSubPage title="Appearance" onBack={goBack} tab={tab} onTab={onTab}>
-          <SCard>
-            <STRow icon={Moon} label="Dark mode" value={darkMode} onChange={setDarkMode} />
-          </SCard>
-          <SCard label="Chat wallpaper">
-            <div className="grid grid-cols-4 gap-3 px-4 py-4">
+        <SPage title="Appearance" onBack={goBack} tab={tab} onTab={onTab}>
+          <SWCard>
+            <SWTRow icon={Moon} label="Dark mode" value={darkMode} onChange={setDarkMode} />
+          </SWCard>
+          <p className="px-1 pt-1 pb-2 text-xs font-semibold uppercase tracking-wider text-[#888]">Chat wallpaper</p>
+          <SWCard>
+            <div className="grid grid-cols-4 gap-3 p-4">
               {[
-                "oklch(0.975 0.006 85)",
-                "oklch(0.965 0.012 200)",
-                "oklch(0.96 0.02 320)",
-                "oklch(0.97 0.01 150)",
-                "oklch(0.96 0.015 40)",
-                "oklch(0.95 0.005 260)",
-                "oklch(0.94 0.018 20)",
-                "oklch(0.95 0.01 100)",
+                "#f2ede8","#ddeaf5","#f5ddf5","#ddf5e2",
+                "#f5eedd","#e0ddf5","#f5dddd","#ddf5f0",
               ].map((bg, i) => (
                 <button key={i}
-                  className={`h-14 rounded-xl transition-all ${i === 0 ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-105" : "opacity-80 hover:opacity-100 hover:scale-105"}`}
+                  className={`h-14 rounded-xl transition-all ${i === 0 ? "ring-2 ring-[#208060] ring-offset-2 scale-105" : "hover:scale-105"}`}
                   style={{ background: bg }} />
               ))}
             </div>
-          </SCard>
-          <SCard label="Font size">
+          </SWCard>
+          <p className="px-1 pt-3 pb-2 text-xs font-semibold uppercase tracking-wider text-[#888]">Font size</p>
+          <SWCard>
             <div className="flex items-center gap-4 px-4 py-4">
-              <span className="w-4 text-center text-xs font-medium text-muted-foreground">A</span>
+              <span className="text-xs font-medium text-[#888]">A</span>
               <div className="relative flex-1">
-                <div className="h-1 w-full rounded-full bg-muted">
-                  <div className="h-1 w-1/2 rounded-full bg-foreground" />
+                <div className="h-1 w-full rounded-full bg-[#e4e0db]">
+                  <div className="h-1 w-1/2 rounded-full bg-[#111]" />
                 </div>
-                <div className="absolute top-1/2 left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground shadow" />
+                <div className="absolute top-1/2 left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#111] shadow" />
               </div>
-              <span className="w-4 text-center text-lg font-medium text-muted-foreground">A</span>
+              <span className="text-lg font-medium text-[#888]">A</span>
             </div>
-          </SCard>
-          <SCard>
-            <SLRow icon={Globe} label="App language" value="English" />
-          </SCard>
-        </SettingsSubPage>
+          </SWCard>
+          <SWCard>
+            <SWLRow icon={Globe} label="App language" value="English" />
+          </SWCard>
+        </SPage>
       )}
 
       {/* ── Main ── */}
       {section === "main" && (
-        <div className="relative h-full overflow-y-auto pb-32 bg-background">
+        <div className={`relative h-full overflow-y-auto pb-32 ${S.page}`}>
 
-          {/* Top bar: Search · title · QR */}
-          <div className="flex items-center justify-between px-4 pt-5 pb-2">
-            <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted transition-colors">
-              <Search className="h-5 w-5" />
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 pt-6 pb-3">
+            <button className="flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-black/5">
+              <Search className={`h-5 w-5 ${S.icon}`} />
             </button>
-            <h1 className="text-[17px] font-semibold">Settings</h1>
-            <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted transition-colors">
-              <QrCode className="h-5 w-5" />
+            <h1 className={`text-[17px] font-semibold ${S.label}`}>Settings</h1>
+            <button className="flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-black/5">
+              <QrCode className={`h-5 w-5 ${S.icon}`} />
             </button>
           </div>
 
-          {/* Profile card */}
-          <div className="mx-4 mb-5">
-            <button className="flex w-full items-center gap-4 rounded-2xl bg-card border px-4 py-4 transition-colors hover:bg-muted/40 active:bg-muted/60">
+          <div className="space-y-4 px-4">
+
+            {/* Profile card */}
+            <button className={`flex w-full items-center gap-3.5 rounded-2xl ${S.card} px-4 py-3.5 shadow-sm transition-colors active:bg-black/5`}>
               <div className="relative shrink-0">
-                <img src={av("men", 86)} alt="" className="h-16 w-16 rounded-full object-cover" />
-                <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-card bg-online" />
+                <img src={av("men", 86)} alt="" className="h-[54px] w-[54px] rounded-full object-cover" />
+                <span className="absolute bottom-0.5 right-0.5 h-3 w-3 rounded-full border-2 border-white bg-online" />
               </div>
               <div className="min-w-0 flex-1 text-left">
-                <p className="text-[17px] font-semibold leading-snug">Alex Johnson</p>
-                <p className="text-sm text-muted-foreground">@alexjohnson</p>
+                <p className={`text-[16px] font-semibold leading-tight ${S.label}`}>Alex Johnson</p>
+                <p className={`text-[13px] ${S.sub}`}>@alexjohnson</p>
               </div>
-              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40" />
+              <ChevronRight className={`h-4 w-4 shrink-0 ${S.chevron}`} />
             </button>
-          </div>
-
-          {/* Settings groups */}
-          <div className="space-y-5 px-4">
 
             {/* Group 1 */}
-            <SCard>
-              <SLRow icon={Star}         label="Starred"           />
-              <SLRow icon={MessageSquare} label="Broadcast messages" />
-              <SLRow icon={Users}        label="Communities"       />
-              <SLRow icon={Laptop}       label="Linked devices"    />
-            </SCard>
+            <SWCard>
+              <SWLRow icon={Star}          label="Starred" />
+              <SWLRow icon={MessageSquare} label="Broadcast messages" />
+              <SWLRow icon={Users}         label="Communities" />
+              <SWLRow icon={Laptop}        label="Linked devices" />
+            </SWCard>
 
             {/* Group 2 */}
-            <SCard>
-              <SLRow icon={Key}     label="Account"            onPress={() => {}}                    />
-              <SLRow icon={Lock}    label="Privacy"            onPress={() => goTo("privacy")}        />
-              <SLRow icon={MessageSquare} label="Chats"        onPress={() => {}}                    />
-              <SLRow icon={Palette} label="Appearance"         onPress={() => goTo("appearance")}    />
-              <SLRow icon={BellIcon} label="Notifications"     onPress={() => goTo("notifications")} />
-              <SLRow icon={Database} label="Storage and data"  onPress={() => {}}                    />
-            </SCard>
+            <SWCard>
+              <SWLRow icon={Key}      label="Account"          onPress={() => {}}                    />
+              <SWLRow icon={Lock}     label="Privacy"          onPress={() => goTo("privacy")}        />
+              <SWLRow icon={MessageSquare} label="Chats"       onPress={() => {}}                    />
+              <SWLRow icon={Palette}  label="Appearance"       onPress={() => goTo("appearance")}    />
+              <SWLRow icon={BellIcon} label="Notifications"    onPress={() => goTo("notifications")} />
+              <SWLRow icon={Database} label="Storage and data" onPress={() => {}}                    />
+            </SWCard>
 
             {/* Group 3 */}
-            <SCard>
-              <SLRow icon={HelpCircle} label="Help and feedback" />
-              <SLRow icon={Heart}      label="Invite a contact"  />
-            </SCard>
+            <SWCard>
+              <SWLRow icon={HelpCircle} label="Help and feedback" />
+              <SWLRow icon={Heart}      label="Invite a contact" />
+            </SWCard>
 
-            {/* Log out — standalone pill */}
-            <button className="flex w-full items-center gap-4 rounded-2xl border border-border bg-card px-4 py-4 transition-colors hover:bg-muted/40 active:bg-muted/60">
-              <LogOut className="h-5 w-5 text-destructive" />
-              <span className="text-[15px] font-medium text-destructive">Log out</span>
-            </button>
+            {/* Log out */}
+            <SWCard>
+              <button className="flex w-full items-center gap-4 px-4 py-3.5 transition-colors active:bg-black/5">
+                <LogOut className="h-5 w-5 shrink-0 text-red-500" />
+                <span className="flex-1 text-left text-[15px] text-red-500">Log out</span>
+              </button>
+            </SWCard>
 
           </div>
 
@@ -492,65 +499,58 @@ function SettingsPage({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
 }
 
 // ─── Settings sub-page shell ──────────────────────────────────────────────────
-function SettingsSubPage({ title, onBack, tab, onTab, children }: {
+function SPage({ title, onBack, tab, onTab, children }: {
   title: string; onBack: () => void; tab: Tab; onTab: (t: Tab) => void; children: React.ReactNode;
 }) {
   return (
-    <div className="relative h-full overflow-y-auto pb-32 bg-background">
-      <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-background/90 px-4 py-3 backdrop-blur">
-        <button onClick={onBack} className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted transition-colors">
-          <ChevronLeft className="h-5 w-5" />
+    <div className={`relative h-full overflow-y-auto pb-32 ${S.page}`}>
+      {/* Header */}
+      <div className={`sticky top-0 z-10 flex items-center justify-between ${S.page}/95 px-4 py-3 backdrop-blur`}>
+        <button onClick={onBack} className="flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-black/5">
+          <ChevronLeft className={`h-5 w-5 ${S.icon}`} />
         </button>
-        <h1 className="text-[17px] font-semibold">{title}</h1>
+        <h1 className={`text-[17px] font-semibold ${S.label}`}>{title}</h1>
         <div className="w-9" />
       </div>
-      <div className="space-y-5 px-4 pt-5">{children}</div>
+      <div className="space-y-4 px-4 pt-3">{children}</div>
       <BottomNav tab={tab} onTab={onTab} />
     </div>
   );
 }
 
-// ─── Settings primitives ──────────────────────────────────────────────────────
-function SCard({ label, children }: { label?: string; children: React.ReactNode }) {
+// ─── Settings primitives (warm-surface versions) ──────────────────────────────
+function SWCard({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      {label && <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>}
-      <div className="overflow-hidden rounded-2xl border bg-card divide-y divide-border/60">{children}</div>
+    <div className={`overflow-hidden rounded-2xl ${S.card} shadow-sm ${S.divider} divide-y`}>
+      {children}
     </div>
   );
 }
 
-// Plain link row — icon in muted circle, label, optional right value / badge
-function SLRow({ icon: Icon, label, value, badge, onPress }: {
+function SWLRow({ icon: Icon, label, value, badge, onPress }: {
   icon: React.ElementType; label: string; value?: string; badge?: string; onPress?: () => void;
 }) {
   return (
-    <button onClick={onPress}
-      className="flex w-full items-center gap-4 px-4 py-3.5 transition-colors hover:bg-muted/40 active:bg-muted/60">
-      <Icon className="h-5 w-5 shrink-0 text-foreground/70" />
-      <span className="flex-1 text-left text-[15px]">{label}</span>
-      {badge && (
-        <span className="mr-1 rounded-full bg-primary px-2 py-0.5 text-[11px] font-bold text-primary-foreground">
-          {badge}
-        </span>
-      )}
-      {value && <span className="text-sm text-muted-foreground">{value}</span>}
-      <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40" />
+    <button onClick={onPress} className="flex w-full items-center gap-4 px-4 py-3.5 transition-colors active:bg-black/5">
+      <Icon className={`h-[19px] w-[19px] shrink-0 ${S.icon}`} strokeWidth={1.8} />
+      <span className={`flex-1 text-left text-[15px] ${S.label}`}>{label}</span>
+      {badge && <span className="mr-0.5 rounded-full bg-[#208060] px-2 py-0.5 text-[11px] font-bold text-white">{badge}</span>}
+      {value && <span className={`text-sm ${S.sub}`}>{value}</span>}
+      <ChevronRight className={`h-[15px] w-[15px] shrink-0 ${S.chevron}`} />
     </button>
   );
 }
 
-// Toggle row
-function STRow({ icon: Icon, label, value, onChange }: {
+function SWTRow({ icon: Icon, label, value, onChange }: {
   icon: React.ElementType; label: string; value: boolean; onChange: (v: boolean) => void;
 }) {
   return (
     <div className="flex w-full items-center gap-4 px-4 py-3.5">
-      <Icon className="h-5 w-5 shrink-0 text-foreground/70" />
-      <span className="flex-1 text-[15px]">{label}</span>
+      <Icon className={`h-[19px] w-[19px] shrink-0 ${S.icon}`} strokeWidth={1.8} />
+      <span className={`flex-1 text-[15px] ${S.label}`}>{label}</span>
       <button role="switch" aria-checked={value} onClick={() => onChange(!value)}
-        className={`relative inline-flex h-[30px] w-[52px] shrink-0 cursor-pointer rounded-full transition-colors duration-200 ${value ? "bg-green-500" : "bg-muted-foreground/30"}`}>
-        <span className={`absolute top-[2px] h-[26px] w-[26px] rounded-full bg-white shadow transition-all duration-200 ${value ? "left-[23px]" : "left-[2px]"}`} />
+        className={`relative inline-flex h-[30px] w-[52px] shrink-0 cursor-pointer rounded-full transition-colors duration-200 ${value ? "bg-[#34c759]" : "bg-[#d1d1d6]"}`}>
+        <span className={`absolute top-[2px] h-[26px] w-[26px] rounded-full bg-white shadow-md transition-all duration-200 ${value ? "left-[23px]" : "left-[2px]"}`} />
       </button>
     </div>
   );
