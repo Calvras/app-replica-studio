@@ -52,6 +52,8 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
   --color-sidebar: var(--sidebar);
+  --color-online: var(--online);
+  --color-bubble: var(--bubble);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
@@ -63,8 +65,15 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --online: oklch(0.72 0.19 145);
+  --bubble: oklch(0.94 0.008 280);
+  --background: oklch(0.99 0.002 280);
+  --foreground: oklch(0.15 0.01 280);
+  --primary: oklch(0.72 0.12 190);
+  --primary-foreground: oklch(1 0 0);
+  --muted: oklch(0.955 0.006 280);
+  --muted-foreground: oklch(0.52 0.015 280);
+  --border: oklch(0.91 0.006 280);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
