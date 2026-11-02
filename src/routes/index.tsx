@@ -52,14 +52,8 @@ function Avatar({ src, size = 56, online }: { src: string; size?: number; online
 function Index() {
   const [open, setOpen] = useState<number | null>(null);
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted py-6">
-      <div className="relative h-[844px] w-[390px] overflow-hidden rounded-[48px] border-[10px] border-foreground bg-background shadow-2xl">
-        <div className="flex items-center justify-between px-7 pt-3 text-sm font-semibold">
-          <span>11:36</span><span className="tracking-widest">▂▄▆ ◉ ▭</span>
-        </div>
-        {open === null ? <ChatList onOpen={setOpen} /> : <Conversation c={chats[open]} onBack={() => setOpen(null)} />}
-        <div className="absolute bottom-2 left-1/2 h-1.5 w-32 -translate-x-1/2 rounded-full bg-foreground" />
-      </div>
+    <div className="mx-auto h-screen max-w-2xl overflow-hidden bg-background">
+      {open === null ? <ChatList onOpen={setOpen} /> : <Conversation c={chats[open]} onBack={() => setOpen(null)} />}
     </div>
   );
 }
@@ -124,7 +118,7 @@ function Conversation({ c, onBack }: { c: (typeof chats)[number]; onBack: () => 
     setText("");
   };
   return (
-    <div className="flex h-[calc(100%-28px)] flex-col">
+    <div className="flex h-full flex-col">
       <div className="flex items-center gap-3 px-4 py-3">
         <button onClick={onBack}><ChevronLeft className="h-7 w-7" /></button>
         <Avatar src={c.img} size={50} online />
@@ -156,7 +150,7 @@ function Conversation({ c, onBack }: { c: (typeof chats)[number]; onBack: () => 
           ),
         )}
       </div>
-      <div className="flex items-center gap-2 px-3 pb-8 pt-2">
+      <div className="flex items-center gap-2 px-3 pb-4 pt-2">
         <button className="flex h-12 w-12 items-center justify-center rounded-full border bg-muted"><Plus className="h-6 w-6" /></button>
         <div className="flex flex-1 items-center gap-2 rounded-full border bg-muted px-4 py-3">
           <input value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder="Message..." className="min-w-0 flex-1 bg-transparent text-lg outline-none" />
