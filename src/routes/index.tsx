@@ -195,47 +195,53 @@ function UpdatesPage({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
   return (
     <div className="relative h-full overflow-y-auto pb-32">
       <div className="flex items-center justify-between px-5 pt-5">
-        <h1 className="text-3xl font-semibold">Updates</h1>
+        <h1 className="text-[22px] font-bold">Updates</h1>
         <div className="flex items-center gap-2">
-          <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted"><Camera className="h-5 w-5" /></button>
-          <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted"><Edit2 className="h-5 w-5" /></button>
+          <button className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted"><Camera className="h-4.5 w-4.5" /></button>
+          <button className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted"><Edit2 className="h-4.5 w-4.5" /></button>
         </div>
       </div>
-      <div className="mx-5 mt-5">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">My Status</p>
-        <div className="flex items-center gap-4">
+      <div className="mx-5 mt-4">
+        <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">My Status</p>
+        <div className="flex items-center gap-3.5">
           <div className="relative shrink-0">
-            <Avatar src={av("men", 86)} size={56} />
-            <span className="absolute bottom-0 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground"><Plus className="h-3 w-3" /></span>
+            <Avatar src={av("men", 86)} size={48} />
+            <span className="absolute bottom-0 right-0 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-primary text-primary-foreground"><Plus className="h-2.5 w-2.5" /></span>
           </div>
           <div>
-            <p className="font-medium">My status</p>
-            <p className="text-sm text-muted-foreground">Tap to add status update</p>
+            <p className="text-[15px] font-medium">My status</p>
+            <p className="text-[13px] text-muted-foreground">Tap to add status update</p>
           </div>
         </div>
       </div>
-      <div className="mt-6 px-5"><p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recent Updates</p></div>
+      <div className="mt-5 px-5"><p className="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Recent Updates</p></div>
       <ul>
         {statuses.filter(s => !s.seen).map((s) => (
-          <li key={s.name} className="flex cursor-pointer items-center gap-4 pl-5 hover:bg-muted/50">
-            <div className="h-14 w-14 shrink-0 rounded-full p-[3px]" style={{ background: "conic-gradient(var(--color-primary) 0%, var(--color-primary) 70%, var(--color-muted) 70%)" }}>
+          <li key={s.name} className="flex cursor-pointer items-center gap-3.5 pl-5 hover:bg-muted/50">
+            <div className="h-12 w-12 shrink-0 rounded-full p-[3px]" style={{ background: "conic-gradient(var(--color-primary) 0%, var(--color-primary) 70%, var(--color-muted) 70%)" }}>
               <img src={s.img} alt="" className="h-full w-full rounded-full object-cover" />
             </div>
-            <div className="flex flex-1 items-center border-b py-4 pr-5">
-              <div className="flex-1"><p className="font-medium">{s.name}</p><p className="text-sm text-muted-foreground">{s.time}</p></div>
+            <div className="flex flex-1 items-center border-b py-3.5 pr-5">
+              <div className="flex-1">
+                <p className="text-[15px] font-medium">{s.name}</p>
+                <p className="text-[13px] text-muted-foreground">{s.time}</p>
+              </div>
             </div>
           </li>
         ))}
       </ul>
-      <div className="mt-2 px-5"><p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Viewed Updates</p></div>
+      <div className="mt-2 px-5"><p className="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Viewed Updates</p></div>
       <ul>
         {statuses.filter(s => s.seen).map((s) => (
-          <li key={s.name} className="flex cursor-pointer items-center gap-4 pl-5 hover:bg-muted/50">
-            <div className="h-14 w-14 shrink-0 rounded-full p-[3px]" style={{ background: "conic-gradient(var(--color-muted-foreground) 0%, var(--color-muted-foreground) 100%)" }}>
+          <li key={s.name} className="flex cursor-pointer items-center gap-3.5 pl-5 hover:bg-muted/50">
+            <div className="h-12 w-12 shrink-0 rounded-full p-[3px]" style={{ background: "conic-gradient(var(--color-muted-foreground) 0%, var(--color-muted-foreground) 100%)" }}>
               <img src={s.img} alt="" className="h-full w-full rounded-full object-cover ring-2 ring-background" />
             </div>
-            <div className="flex flex-1 items-center border-b py-4 pr-5">
-              <div className="flex-1"><p className="font-medium text-muted-foreground">{s.name}</p><p className="text-sm text-muted-foreground">{s.time}</p></div>
+            <div className="flex flex-1 items-center border-b py-3.5 pr-5">
+              <div className="flex-1">
+                <p className="text-[15px] font-medium text-muted-foreground">{s.name}</p>
+                <p className="text-[13px] text-muted-foreground">{s.time}</p>
+              </div>
             </div>
           </li>
         ))}
@@ -261,50 +267,50 @@ function CallsPage({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
   return (
     <div className="relative h-full overflow-y-auto pb-32">
       <div className="flex items-center justify-between px-5 pt-5">
-        <h1 className="text-3xl font-semibold">Calls</h1>
+        <h1 className="text-[22px] font-bold">Calls</h1>
         <div className="flex items-center gap-2">
-          <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted"><Search className="h-5 w-5" /></button>
-          <button className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow"><PhoneCall className="h-5 w-5" /></button>
+          <button className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted"><Search className="h-4.5 w-4.5" /></button>
+          <button className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow"><PhoneCall className="h-4.5 w-4.5" /></button>
         </div>
       </div>
-      <div className="flex gap-2 px-5 pt-4">
+      <div className="flex gap-2 px-5 pt-3">
         {(["all", "missed"] as const).map((f) => (
           <button key={f} onClick={() => setFilter(f)}
-            className={`rounded-full px-4 py-1.5 text-sm font-medium capitalize transition-colors ${filter === f ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}>
+            className={`rounded-full px-4 py-1 text-[13px] font-medium capitalize transition-colors ${filter === f ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}>
             {f === "all" ? "All" : "Missed"}
           </button>
         ))}
       </div>
-      <div className="mt-5 px-5">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Favourites</p>
-        <div className="flex gap-5 overflow-x-auto pb-1">
+      <div className="mt-4 px-5">
+        <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Favourites</p>
+        <div className="flex gap-4 overflow-x-auto pb-1">
           {chats.slice(0, 4).map((c) => (
             <button key={c.name} className="flex flex-col items-center gap-1.5">
-              <Avatar src={c.img} size={54} online />
-              <span className="w-14 truncate text-center text-xs font-medium">{c.name.split(" ")[0]}</span>
+              <Avatar src={c.img} size={48} online />
+              <span className="w-12 truncate text-center text-[12px] font-medium">{c.name.split(" ")[0]}</span>
             </button>
           ))}
         </div>
       </div>
-      <div className="mt-5">
+      <div className="mt-4">
         {Object.entries(grouped).map(([date, entries]) => (
           <div key={date}>
-            <p className="px-5 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{date}</p>
+            <p className="px-5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{date}</p>
             <ul>
               {entries.map((c, i) => (
-                <li key={i} className="flex items-center gap-4 pl-5 hover:bg-muted/50">
-                  <Avatar src={c.img} size={50} />
-                  <div className="flex flex-1 items-center border-b py-3.5 pr-5">
+                <li key={i} className="flex items-center gap-3.5 pl-5 hover:bg-muted/50">
+                  <Avatar src={c.img} size={44} />
+                  <div className="flex flex-1 items-center border-b py-3 pr-5">
                     <div className="flex-1">
-                      <p className={`font-medium ${c.type === "missed" ? "text-destructive" : ""}`}>{c.name}</p>
+                      <p className={`text-[15px] font-medium ${c.type === "missed" ? "text-destructive" : ""}`}>{c.name}</p>
                       <div className="mt-0.5 flex items-center gap-1.5">
                         <CallIcon type={c.type} />
-                        <span className="text-sm text-muted-foreground capitalize">{c.kind} call</span>
-                        {c.duration && <><span className="text-muted-foreground">·</span><Clock className="h-3 w-3 text-muted-foreground" /><span className="text-sm text-muted-foreground">{c.duration}</span></>}
+                        <span className="text-[13px] text-muted-foreground capitalize">{c.kind} call</span>
+                        {c.duration && <><span className="text-muted-foreground">·</span><Clock className="h-3 w-3 text-muted-foreground" /><span className="text-[13px] text-muted-foreground">{c.duration}</span></>}
                       </div>
                     </div>
-                    <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
-                      {c.kind === "voice" ? <Phone className="h-5 w-5 text-primary" /> : <Video className="h-5 w-5 text-primary" />}
+                    <button className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
+                      {c.kind === "voice" ? <Phone className="h-4.5 w-4.5 text-primary" /> : <Video className="h-4.5 w-4.5 text-primary" />}
                     </button>
                   </div>
                 </li>
@@ -561,40 +567,40 @@ function ChatList({ onOpen, tab, onTab }: { onOpen: (i: number) => void; tab: Ta
   return (
     <div className="relative h-full overflow-y-auto pb-32">
       <div className="flex items-center justify-between px-5 pt-5">
-        <div className="flex items-center gap-4">
-          <Avatar src={av("men", 86)} size={50} />
-          <h1 className="text-3xl font-semibold">Chat</h1>
+        <div className="flex items-center gap-3">
+          <Avatar src={av("men", 86)} size={44} />
+          <h1 className="text-[22px] font-bold">Chat</h1>
         </div>
-        <Bell className="h-6 w-6" />
+        <Bell className="h-5 w-5" />
       </div>
-      <div className="mx-5 mt-5 flex items-center gap-3 rounded-full bg-muted px-4 py-3 text-muted-foreground">
-        <Search className="h-5 w-5" />
-        <input placeholder="Search" className="flex-1 bg-transparent text-lg outline-none" />
+      <div className="mx-5 mt-4 flex items-center gap-3 rounded-full bg-muted px-4 py-2.5 text-muted-foreground">
+        <Search className="h-4 w-4" />
+        <input placeholder="Search" className="flex-1 bg-transparent text-[15px] outline-none" />
       </div>
-      <div className="flex gap-4 overflow-x-auto px-5 pt-5 pb-3">
-        <div className="flex flex-col items-center gap-2">
-          <button className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground"><Plus className="h-8 w-8" /></button>
-          <span className="text-sm font-medium">New</span>
+      <div className="flex gap-4 overflow-x-auto px-5 pt-4 pb-3">
+        <div className="flex flex-col items-center gap-1.5">
+          <button className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground"><Plus className="h-6 w-6" /></button>
+          <span className="text-[12px] font-medium">New</span>
         </div>
         {stories.map((s) => (
-          <div key={s.name} className="flex flex-col items-center gap-2">
-            <Avatar src={s.img} size={64} online />
-            <span className="text-sm font-medium">{s.name}</span>
+          <div key={s.name} className="flex flex-col items-center gap-1.5">
+            <Avatar src={s.img} size={56} online />
+            <span className="text-[12px] font-medium">{s.name}</span>
           </div>
         ))}
       </div>
       <ul>
         {chats.map((c, i) => (
-          <li key={c.name} onClick={() => onOpen(i)} className="flex cursor-pointer items-center gap-4 pl-5 hover:bg-muted/50 active:bg-muted/70 transition-colors">
-            <Avatar src={c.img} size={56} online />
-            <div className="flex flex-1 items-center border-b py-4 pr-5">
+          <li key={c.name} onClick={() => onOpen(i)} className="flex cursor-pointer items-center gap-3.5 pl-5 hover:bg-muted/50 active:bg-muted/70 transition-colors">
+            <Avatar src={c.img} size={48} online />
+            <div className="flex flex-1 items-center border-b py-3.5 pr-5">
               <div className="flex-1">
-                <p className="text-lg font-medium">{c.name}</p>
-                <p className="text-muted-foreground">{c.msg}</p>
+                <p className="text-[15px] font-semibold">{c.name}</p>
+                <p className="text-[13px] text-muted-foreground">{c.msg}</p>
               </div>
-              <div className="flex flex-col items-end gap-2">
-                <span className="text-sm text-muted-foreground">{c.time}</span>
-                {c.unread ? <span className="rounded bg-primary px-1.5 text-xs font-semibold text-primary-foreground">{c.unread}</span> : <span className="h-4" />}
+              <div className="flex flex-col items-end gap-1.5">
+                <span className="text-[12px] text-muted-foreground">{c.time}</span>
+                {c.unread ? <span className="rounded bg-primary px-1.5 text-[11px] font-semibold text-primary-foreground">{c.unread}</span> : <span className="h-4" />}
               </div>
             </div>
           </li>
@@ -622,52 +628,55 @@ function Conversation({ c, onBack }: { c: (typeof chats)[number]; onBack: () => 
   };
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-3 border-b bg-background/90 px-4 py-3 backdrop-blur">
-        <button onClick={onBack}><ChevronLeft className="h-7 w-7" /></button>
-        <Avatar src={c.img} size={50} online />
-        <div className="flex-1"><p className="text-lg font-medium">{c.name}</p><p className="text-sm text-muted-foreground">Online</p></div>
+      <div className="flex items-center gap-3 border-b bg-background/90 px-4 py-2.5 backdrop-blur">
+        <button onClick={onBack}><ChevronLeft className="h-6 w-6" /></button>
+        <Avatar src={c.img} size={42} online />
+        <div className="flex-1">
+          <p className="text-[15px] font-semibold">{c.name}</p>
+          <p className="text-[12px] text-muted-foreground">Online</p>
+        </div>
         <div className="flex items-center gap-1">
           {[Phone, Video, MoreHorizontal].map((I, k) => (
-            <button key={k} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted"><I className="h-5 w-5" /></button>
+            <button key={k} className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted"><I className="h-4.5 w-4.5" /></button>
           ))}
         </div>
       </div>
       <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
-        <div className="flex justify-center"><span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">Today</span></div>
+        <div className="flex justify-center"><span className="rounded-full bg-muted px-3 py-1 text-[11px] font-medium text-muted-foreground">Today</span></div>
         {msgs.map((m, i) =>
           m.voice ? (
             <div key={i} className="flex items-end gap-2">
-              <div className="w-72 max-w-[75%] rounded-3xl rounded-bl-md bg-bubble px-3 py-2.5 text-foreground">
+              <div className="w-64 max-w-[75%] rounded-3xl rounded-bl-md bg-bubble px-3 py-2.5 text-foreground">
                 <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"><Play className="h-5 w-5 fill-current" /></span>
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"><Play className="h-4 w-4 fill-current" /></span>
                   <div className="flex flex-1 items-center justify-between overflow-hidden">
-                    {Array.from({ length: 28 }).map((_, k) => <span key={k} className="w-[3px] shrink-0 rounded bg-primary" style={{ height: 6 + ((k * 7) % 18) }} />)}
+                    {Array.from({ length: 24 }).map((_, k) => <span key={k} className="w-[3px] shrink-0 rounded bg-primary" style={{ height: 4 + ((k * 7) % 14) }} />)}
                   </div>
                 </div>
-                <div className="mt-1 flex justify-between pl-[52px] text-xs text-muted-foreground">
-                  <span>1:10</span><span className="flex items-center gap-1">{m.time}<Check className="h-4 w-4" /></span>
+                <div className="mt-1 flex justify-between pl-[48px] text-[11px] text-muted-foreground">
+                  <span>1:10</span><span className="flex items-center gap-1">{m.time}<Check className="h-3 w-3" /></span>
                 </div>
               </div>
             </div>
           ) : (
             <div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[75%] rounded-3xl px-4 py-2.5 text-[15px] leading-relaxed ${m.me ? "rounded-br-md bg-sent text-sent-foreground" : "rounded-bl-md bg-bubble text-foreground"}`}>
+              <div className={`max-w-[75%] rounded-3xl px-3.5 py-2 text-[14px] leading-relaxed ${m.me ? "rounded-br-md bg-sent text-sent-foreground" : "rounded-bl-md bg-bubble text-foreground"}`}>
                 {m.text}
-                <div className={`mt-1 flex items-center justify-end gap-1 text-xs ${m.me ? "opacity-90" : "text-muted-foreground"}`}>
-                  {m.time}{m.me && <CheckCheck className="h-4 w-4" />}
+                <div className={`mt-0.5 flex items-center justify-end gap-1 text-[11px] ${m.me ? "opacity-90" : "text-muted-foreground"}`}>
+                  {m.time}{m.me && <CheckCheck className="h-3.5 w-3.5" />}
                 </div>
               </div>
             </div>
           )
         )}
       </div>
-      <div className="flex items-center gap-2 border-t bg-background px-3 pb-[max(1.5rem,calc(env(safe-area-inset-bottom)+0.5rem))] pt-3">
-        <button className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border bg-muted"><Plus className="h-6 w-6" /></button>
-        <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full border bg-muted px-3 py-2.5">
-          <input value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder="Message..." className="min-w-0 flex-1 bg-transparent text-base outline-none" />
-          <Smile className="h-5 w-5 shrink-0" /><span className="h-5 w-px shrink-0 bg-border" /><Mic className="h-5 w-5 shrink-0" />
+      <div className="flex items-center gap-2 border-t bg-background px-3 pb-[max(1.25rem,calc(env(safe-area-inset-bottom)+0.5rem))] pt-2.5">
+        <button className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border bg-muted"><Plus className="h-5 w-5" /></button>
+        <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full border bg-muted px-3 py-2">
+          <input value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder="Message..." className="min-w-0 flex-1 bg-transparent text-[14px] outline-none" />
+          <Smile className="h-4.5 w-4.5 shrink-0" /><span className="h-4 w-px shrink-0 bg-border" /><Mic className="h-4.5 w-4.5 shrink-0" />
         </div>
-        <button onClick={send} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"><Send className="h-5 w-5" /></button>
+        <button onClick={send} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"><Send className="h-4 w-4" /></button>
       </div>
     </div>
   );
