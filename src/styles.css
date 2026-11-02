@@ -168,3 +168,10 @@
   --border: oklch(0.88 0.014 200);
 }
 body { background-color: oklch(0.94 0.015 200); }
+:root {
+  --background: oklch(0.975 0.006 85);
+  --muted: oklch(0.94 0.007 85);
+  --bubble: oklch(0.925 0.008 85);
+  --border: oklch(0.89 0.008 85);
+}
+body { background-color: oklch(0.955 0.007 85); }

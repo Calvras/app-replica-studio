@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   Bell, Search, Plus, ChevronLeft, Phone, Video, MoreHorizontal, Smile, Mic,
-  Send, Play, CheckCheck, Check,
+  Send, Play, CheckCheck, Check, CircleDashed, MessagesSquare, Settings,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -60,7 +60,7 @@ function Index() {
 
 function ChatList({ onOpen }: { onOpen: (i: number) => void }) {
   return (
-    <div className="h-full overflow-y-auto pb-10">
+    <div className="relative h-full overflow-y-auto pb-28">
       <div className="flex items-center justify-between px-5 pt-5">
         <div className="flex items-center gap-4">
           <Avatar src={av("men", 86)} size={50} />
@@ -99,6 +99,21 @@ function ChatList({ onOpen }: { onOpen: (i: number) => void }) {
           </li>
         ))}
       </ul>
+      <nav className="fixed bottom-5 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full border bg-background/85 p-1.5 shadow-xl backdrop-blur-md">
+        {[
+          { l: "Updates", I: CircleDashed, dot: true },
+          { l: "Calls", I: Phone },
+          { l: "Chats", I: MessagesSquare, badge: 2, active: true },
+          { l: "Settings", I: Settings },
+        ].map(({ l, I, dot, badge, active }) => (
+          <button key={l} className={`relative flex w-20 flex-col items-center gap-0.5 rounded-full py-2 text-xs font-medium ${active ? "bg-muted text-foreground" : "text-muted-foreground"}`}>
+            <I className="h-6 w-6" />
+            {dot && <span className="absolute right-6 top-1.5 h-2.5 w-2.5 rounded-full bg-online" />}
+            {badge && <span className="absolute right-3 top-0.5 rounded-full bg-primary px-1.5 text-[10px] font-semibold text-primary-foreground">{badge}</span>}
+            {l}
+          </button>
+        ))}
+      </nav>
     </div>
   );
 }
