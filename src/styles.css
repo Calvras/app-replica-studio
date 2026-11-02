@@ -151,3 +151,13 @@
     color: var(--color-foreground);
   }
 }
+
+:root {
+  --background: oklch(0.99 0.002 280);
+  --foreground: oklch(0.15 0.01 280);
+  --primary: oklch(0.72 0.12 190);
+  --primary-foreground: oklch(1 0 0);
+  --muted: oklch(0.955 0.006 280);
+  --muted-foreground: oklch(0.52 0.015 280);
+  --border: oklch(0.91 0.006 280);
+}
