@@ -53,6 +53,8 @@
   --color-chart-5: var(--chart-5);
   --color-sidebar: var(--sidebar);
   --color-online: var(--online);
+  --color-sent: var(--sent);
+  --color-sent-foreground: var(--sent-foreground);
   --color-bubble: var(--bubble);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -175,3 +177,8 @@ body { background-color: oklch(0.94 0.015 200); }
   --border: oklch(0.89 0.008 85);
 }
 body { background-color: oklch(0.955 0.007 85); }
+:root {
+  --sent: oklch(0.6 0.17 255);
+  --sent-foreground: oklch(1 0 0);
+  --bubble: oklch(0.92 0.003 260);
+}

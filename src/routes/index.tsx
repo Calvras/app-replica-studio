@@ -52,7 +52,7 @@ function Avatar({ src, size = 56, online }: { src: string; size?: number; online
 function Index() {
   const [open, setOpen] = useState<number | null>(null);
   return (
-    <div className="mx-auto h-screen max-w-2xl overflow-hidden bg-background">
+    <div className="mx-auto h-dvh max-w-2xl overflow-hidden bg-background">
       {open === null ? <ChatList onOpen={setOpen} /> : <Conversation c={chats[open]!} onBack={() => setOpen(null)} />}
     </div>
   );
@@ -60,7 +60,7 @@ function Index() {
 
 function ChatList({ onOpen }: { onOpen: (i: number) => void }) {
   return (
-    <div className="relative h-full overflow-y-auto pb-28">
+    <div className="relative h-full overflow-y-auto pb-32">
       <div className="flex items-center justify-between px-5 pt-5">
         <div className="flex items-center gap-4">
           <Avatar src={av("men", 86)} size={50} />
@@ -99,7 +99,7 @@ function ChatList({ onOpen }: { onOpen: (i: number) => void }) {
           </li>
         ))}
       </ul>
-      <nav className="fixed bottom-5 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full border bg-background/85 p-1.5 shadow-xl backdrop-blur-md">
+      <nav className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full border bg-background/85 p-1.5 shadow-xl backdrop-blur-md">
         {[
           { l: "Updates", I: CircleDashed, dot: true },
           { l: "Calls", I: Phone },
@@ -158,7 +158,7 @@ function Conversation({ c, onBack }: { c: (typeof chats)[number]; onBack: () => 
             </div>
           ) : (
             <div key={i} className={`flex ${m.me ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[75%] rounded-3xl px-4 py-2.5 text-[15px] leading-relaxed ${m.me ? "rounded-br-md bg-primary text-primary-foreground" : "rounded-bl-md bg-bubble text-foreground"}`}>
+              <div className={`max-w-[75%] rounded-3xl px-4 py-2.5 text-[15px] leading-relaxed ${m.me ? "rounded-br-md bg-sent text-sent-foreground" : "rounded-bl-md bg-bubble text-foreground"}`}>
                 {m.text}
                 <div className={`mt-1 flex items-center justify-end gap-1 text-xs ${m.me ? "opacity-90" : "text-muted-foreground"}`}>{m.time}{m.me && <CheckCheck className="h-4 w-4" />}</div>
               </div>
@@ -166,7 +166,7 @@ function Conversation({ c, onBack }: { c: (typeof chats)[number]; onBack: () => 
           ),
         )}
       </div>
-      <div className="flex items-center gap-2 border-t bg-background px-3 pb-4 pt-3">
+      <div className="flex items-center gap-2 border-t bg-background px-3 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3">
         <button className="flex h-12 w-12 items-center justify-center rounded-full border bg-muted"><Plus className="h-6 w-6" /></button>
         <div className="flex flex-1 items-center gap-2 rounded-full border bg-muted px-4 py-2.5">
           <input value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder="Message..." className="min-w-0 flex-1 bg-transparent text-lg outline-none" />
