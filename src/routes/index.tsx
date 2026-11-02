@@ -7,7 +7,7 @@ import {
   ChevronRight, Moon, Bell as BellIcon, Shield, Lock, HelpCircle,
   LogOut, Palette, Globe, MessageSquare, Camera, Edit2, Star, Archive,
   Volume2, Vibrate, BellOff, Fingerprint, Eye, Database,
-  Info, QrCode, Wifi, Zap,
+  Info, QrCode, Zap, Users, Laptop, Heart, Key,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -321,92 +321,69 @@ function CallsPage({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
 // ─── Settings ─────────────────────────────────────────────────────────────────
 type SettingsSection = "main" | "notifications" | "privacy" | "appearance";
 
-// Icon badge colors (iOS-style tinted squares)
-const iconColors: Record<string, string> = {
-  blue:   "bg-blue-500",
-  green:  "bg-green-500",
-  purple: "bg-purple-500",
-  red:    "bg-red-500",
-  orange: "bg-orange-500",
-  teal:   "bg-teal-500",
-  indigo: "bg-indigo-500",
-  pink:   "bg-pink-500",
-  yellow: "bg-yellow-500",
-  gray:   "bg-gray-500",
-};
-
-function IconBadge({ color, icon: Icon }: { color: keyof typeof iconColors; icon: React.ElementType }) {
-  return (
-    <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] ${iconColors[color]} text-white shadow-sm`}>
-      <Icon className="h-[18px] w-[18px]" />
-    </div>
-  );
-}
-
 function SettingsPage({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
   const [section, setSection] = useState<SettingsSection>("main");
-  const [prevSection, setPrevSection] = useState<SettingsSection>("main");
-  const [darkMode, setDarkMode]       = useState(false);
-  const [notifSound, setNotifSound]   = useState(true);
-  const [notifVib, setNotifVib]       = useState(true);
-  const [notifPrev, setNotifPrev]     = useState(true);
-  const [muteAll, setMuteAll]         = useState(false);
-  const [lastSeen, setLastSeen]       = useState(true);
-  const [receipts, setReceipts]       = useState(true);
-  const [onlineSt, setOnlineSt]       = useState(true);
-  const [biometric, setBiometric]     = useState(false);
+  const [notifSound, setNotifSound] = useState(true);
+  const [notifVib,   setNotifVib]   = useState(true);
+  const [notifPrev,  setNotifPrev]  = useState(true);
+  const [muteAll,    setMuteAll]    = useState(false);
+  const [lastSeen,   setLastSeen]   = useState(true);
+  const [receipts,   setReceipts]   = useState(true);
+  const [onlineSt,   setOnlineSt]   = useState(true);
+  const [biometric,  setBiometric]  = useState(false);
+  const [darkMode,   setDarkMode]   = useState(false);
 
-  const goTo = (s: SettingsSection) => { setPrevSection(section); setSection(s); };
-  const goBack = () => { setPrevSection(section); setSection("main"); };
-
-  const animKey = section;
+  const goTo   = (s: SettingsSection) => setSection(s);
+  const goBack = () => setSection("main");
   const kind: TransitionKind = section === "main" ? "pop" : "push";
 
   return (
-    <Animated id={animKey} kind={kind}>
+    <Animated id={section} kind={kind}>
+
+      {/* ── Notifications ── */}
       {section === "notifications" && (
-        <SubPage title="Notifications" onBack={goBack} tab={tab} onTab={onTab}>
-          <SGroup label="Messages">
-            <TRow color="blue"   icon={Volume2}  label="Message Sound"    value={notifSound} onChange={setNotifSound} />
-            <TRow color="purple" icon={Vibrate}  label="Vibration"        value={notifVib}   onChange={setNotifVib}   />
-            <TRow color="indigo" icon={Eye}      label="Show Preview"     value={notifPrev}  onChange={setNotifPrev}  />
-          </SGroup>
-          <SGroup label="General">
-            <TRow color="gray"   icon={BellOff}  label="Mute All"         value={muteAll}    onChange={setMuteAll}    />
-          </SGroup>
-          <SGroup label="Calls">
-            <TRow color="green"  icon={Phone}    label="Ringtone"         value={true}       onChange={() => {}}      />
-            <TRow color="teal"   icon={Vibrate}  label="Vibrate on Call"  value={true}       onChange={() => {}}      />
-          </SGroup>
-        </SubPage>
+        <SettingsSubPage title="Notifications" onBack={goBack} tab={tab} onTab={onTab}>
+          <SCard>
+            <STRow icon={Volume2}  label="Message sound"   value={notifSound} onChange={setNotifSound} />
+            <STRow icon={Vibrate}  label="Vibration"        value={notifVib}   onChange={setNotifVib}   />
+            <STRow icon={Eye}      label="Show preview"     value={notifPrev}  onChange={setNotifPrev}  />
+            <STRow icon={BellOff}  label="Mute all"         value={muteAll}    onChange={setMuteAll}    />
+          </SCard>
+          <SCard>
+            <STRow icon={Phone}    label="Ringtone"         value={true}       onChange={() => {}}      />
+            <STRow icon={Vibrate}  label="Vibrate on call"  value={true}       onChange={() => {}}      />
+          </SCard>
+        </SettingsSubPage>
       )}
 
+      {/* ── Privacy ── */}
       {section === "privacy" && (
-        <SubPage title="Privacy & Security" onBack={goBack} tab={tab} onTab={onTab}>
-          <SGroup label="Visibility">
-            <TRow color="blue"   icon={Clock}       label="Last Seen"             value={lastSeen}  onChange={setLastSeen}  />
-            <TRow color="teal"   icon={CheckCheck}  label="Read Receipts"         value={receipts}  onChange={setReceipts}  />
-            <TRow color="indigo" icon={Eye}         label="Online Status"         value={onlineSt}  onChange={setOnlineSt}  />
-          </SGroup>
-          <SGroup label="Security">
-            <TRow color="green"  icon={Fingerprint} label="Biometric Lock"        value={biometric} onChange={setBiometric} />
-            <LRow color="orange" icon={Lock}        label="Two-Step Verification" />
-            <LRow color="red"    icon={Shield}      label="Blocked Contacts"      badge="3" />
-          </SGroup>
-          <SGroup label="Data">
-            <LRow color="gray"   icon={Database}    label="Manage Storage" />
-            <LRow color="purple" icon={Archive}     label="Chat Backup"    />
-          </SGroup>
-        </SubPage>
+        <SettingsSubPage title="Privacy" onBack={goBack} tab={tab} onTab={onTab}>
+          <SCard>
+            <STRow icon={Clock}       label="Last seen"          value={lastSeen}  onChange={setLastSeen}  />
+            <STRow icon={CheckCheck}  label="Read receipts"      value={receipts}  onChange={setReceipts}  />
+            <STRow icon={Eye}         label="Online status"      value={onlineSt}  onChange={setOnlineSt}  />
+          </SCard>
+          <SCard>
+            <STRow icon={Fingerprint} label="Biometric lock"     value={biometric} onChange={setBiometric} />
+            <SLRow icon={Lock}        label="Two-step verification" />
+            <SLRow icon={Shield}      label="Blocked contacts"     badge="3" />
+          </SCard>
+          <SCard>
+            <SLRow icon={Database}    label="Manage storage" />
+            <SLRow icon={Archive}     label="Chat backup" />
+          </SCard>
+        </SettingsSubPage>
       )}
 
+      {/* ── Appearance ── */}
       {section === "appearance" && (
-        <SubPage title="Appearance" onBack={goBack} tab={tab} onTab={onTab}>
-          <SGroup label="Theme">
-            <TRow color="indigo" icon={Moon}   label="Dark Mode" value={darkMode} onChange={setDarkMode} />
-          </SGroup>
-          <SGroup label="Chat Wallpaper">
-            <div className="grid grid-cols-4 gap-3 px-4 py-3">
+        <SettingsSubPage title="Appearance" onBack={goBack} tab={tab} onTab={onTab}>
+          <SCard>
+            <STRow icon={Moon} label="Dark mode" value={darkMode} onChange={setDarkMode} />
+          </SCard>
+          <SCard label="Chat wallpaper">
+            <div className="grid grid-cols-4 gap-3 px-4 py-4">
               {[
                 "oklch(0.975 0.006 85)",
                 "oklch(0.965 0.012 200)",
@@ -417,169 +394,163 @@ function SettingsPage({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
                 "oklch(0.94 0.018 20)",
                 "oklch(0.95 0.01 100)",
               ].map((bg, i) => (
-                <button key={i} className={`h-14 rounded-xl border-[2.5px] transition-all ${i === 0 ? "border-primary shadow-md scale-105" : "border-transparent hover:scale-105"}`} style={{ background: bg }} />
+                <button key={i}
+                  className={`h-14 rounded-xl transition-all ${i === 0 ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-105" : "opacity-80 hover:opacity-100 hover:scale-105"}`}
+                  style={{ background: bg }} />
               ))}
             </div>
-          </SGroup>
-          <SGroup label="Font Size">
-            <div className="flex items-center gap-4 px-4 py-3">
-              <span className="text-xs text-muted-foreground font-medium">A</span>
-              <div className="relative flex-1 py-2">
-                <div className="h-1.5 w-full rounded-full bg-muted">
-                  <div className="h-1.5 w-1/2 rounded-full bg-primary" />
+          </SCard>
+          <SCard label="Font size">
+            <div className="flex items-center gap-4 px-4 py-4">
+              <span className="w-4 text-center text-xs font-medium text-muted-foreground">A</span>
+              <div className="relative flex-1">
+                <div className="h-1 w-full rounded-full bg-muted">
+                  <div className="h-1 w-1/2 rounded-full bg-foreground" />
                 </div>
-                <div className="absolute top-1/2 left-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary bg-background shadow-md" />
+                <div className="absolute top-1/2 left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground shadow" />
               </div>
-              <span className="text-xl font-medium text-muted-foreground">A</span>
+              <span className="w-4 text-center text-lg font-medium text-muted-foreground">A</span>
             </div>
-          </SGroup>
-          <SGroup label="Language">
-            <LRow color="blue" icon={Globe} label="App Language" value="English" />
-          </SGroup>
-        </SubPage>
+          </SCard>
+          <SCard>
+            <SLRow icon={Globe} label="App language" value="English" />
+          </SCard>
+        </SettingsSubPage>
       )}
 
+      {/* ── Main ── */}
       {section === "main" && (
-        <div className="relative h-full overflow-y-auto pb-32">
-          {/* Gradient hero header */}
-          <div className="relative overflow-hidden pb-6 pt-12 px-5"
-            style={{ background: "linear-gradient(160deg, oklch(0.55 0.18 255) 0%, oklch(0.45 0.22 290) 100%)" }}>
-            {/* Decorative blobs */}
-            <div className="pointer-events-none absolute -top-8 -right-8 h-40 w-40 rounded-full opacity-20"
-              style={{ background: "oklch(0.85 0.15 200)" }} />
-            <div className="pointer-events-none absolute -bottom-6 -left-6 h-32 w-32 rounded-full opacity-15"
-              style={{ background: "oklch(0.75 0.2 280)" }} />
+        <div className="relative h-full overflow-y-auto pb-32 bg-background">
 
-            <div className="relative flex items-center gap-4">
-              <div className="relative">
-                <img src={av("men", 86)} alt="" className="h-20 w-20 rounded-full object-cover ring-4 ring-white/30 shadow-xl" />
-                <button className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-md">
-                  <Camera className="h-3.5 w-3.5 text-gray-700" />
-                </button>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xl font-bold text-white">Alex Johnson</p>
-                <p className="text-sm text-white/70 mt-0.5">Available</p>
-                <p className="text-xs text-white/60 mt-0.5">+1 (555) 012-3456</p>
-              </div>
-              <button className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 backdrop-blur">
-                <QrCode className="h-4 w-4 text-white" />
-              </button>
-            </div>
-
-            {/* Quick stat chips */}
-            <div className="mt-4 flex gap-2">
-              {[
-                { label: "Chats",   value: "142" },
-                { label: "Groups",  value: "18"  },
-                { label: "Starred", value: "7"   },
-              ].map(({ label, value }) => (
-                <div key={label} className="flex-1 rounded-xl bg-white/15 px-3 py-2 text-center backdrop-blur-sm">
-                  <p className="text-base font-bold text-white">{value}</p>
-                  <p className="text-[11px] text-white/70">{label}</p>
-                </div>
-              ))}
-            </div>
+          {/* Top bar: Search · title · QR */}
+          <div className="flex items-center justify-between px-4 pt-5 pb-2">
+            <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted transition-colors">
+              <Search className="h-5 w-5" />
+            </button>
+            <h1 className="text-[17px] font-semibold">Settings</h1>
+            <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted transition-colors">
+              <QrCode className="h-5 w-5" />
+            </button>
           </div>
 
-          {/* Settings list */}
-          <div className="mt-5 px-4 space-y-3">
-            <SGroup>
-              <LRow color="blue"   icon={BellIcon} label="Notifications"   onPress={() => goTo("notifications")} />
-              <LRow color="purple" icon={Palette}  label="Appearance"      onPress={() => goTo("appearance")}    />
-              <LRow color="teal"   icon={Globe}    label="Language"        value="English"                       />
-            </SGroup>
-
-            <SGroup>
-              <LRow color="indigo" icon={Shield}      label="Privacy & Security"  onPress={() => goTo("privacy")} />
-              <LRow color="orange" icon={Lock}        label="Two-Step Verification"                               />
-              <LRow color="green"  icon={Fingerprint} label="Fingerprint Lock"                                    />
-            </SGroup>
-
-            <SGroup>
-              <LRow color="gray"   icon={Database}    label="Storage & Data"  />
-              <LRow color="purple" icon={Archive}     label="Chat Backup"     />
-              <LRow color="blue"   icon={MessageSquare} label="Chat History"  />
-            </SGroup>
-
-            <SGroup>
-              <LRow color="yellow" icon={Zap}         label="What's New"      badge="3"     />
-              <LRow color="green"  icon={Star}        label="Rate the App"                  />
-              <LRow color="teal"   icon={HelpCircle}  label="Help & Support"                />
-              <LRow color="gray"   icon={Info}        label="About"           value="v2.4.1" />
-            </SGroup>
-
-            <button className="flex w-full items-center gap-3 rounded-2xl border border-destructive/20 bg-destructive/5 px-4 py-3.5 text-destructive transition-colors active:bg-destructive/10">
-              <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-red-500 text-white shadow-sm">
-                <LogOut className="h-[18px] w-[18px]" />
+          {/* Profile card */}
+          <div className="mx-4 mb-5">
+            <button className="flex w-full items-center gap-4 rounded-2xl bg-card border px-4 py-4 transition-colors hover:bg-muted/40 active:bg-muted/60">
+              <div className="relative shrink-0">
+                <img src={av("men", 86)} alt="" className="h-16 w-16 rounded-full object-cover" />
+                <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-card bg-online" />
               </div>
-              <span className="flex-1 text-left font-semibold">Log Out</span>
+              <div className="min-w-0 flex-1 text-left">
+                <p className="text-[17px] font-semibold leading-snug">Alex Johnson</p>
+                <p className="text-sm text-muted-foreground">@alexjohnson</p>
+              </div>
+              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40" />
             </button>
+          </div>
+
+          {/* Settings groups */}
+          <div className="space-y-5 px-4">
+
+            {/* Group 1 */}
+            <SCard>
+              <SLRow icon={Star}         label="Starred"           />
+              <SLRow icon={MessageSquare} label="Broadcast messages" />
+              <SLRow icon={Users}        label="Communities"       />
+              <SLRow icon={Laptop}       label="Linked devices"    />
+            </SCard>
+
+            {/* Group 2 */}
+            <SCard>
+              <SLRow icon={Key}     label="Account"            onPress={() => {}}                    />
+              <SLRow icon={Lock}    label="Privacy"            onPress={() => goTo("privacy")}        />
+              <SLRow icon={MessageSquare} label="Chats"        onPress={() => {}}                    />
+              <SLRow icon={Palette} label="Appearance"         onPress={() => goTo("appearance")}    />
+              <SLRow icon={BellIcon} label="Notifications"     onPress={() => goTo("notifications")} />
+              <SLRow icon={Database} label="Storage and data"  onPress={() => {}}                    />
+            </SCard>
+
+            {/* Group 3 */}
+            <SCard>
+              <SLRow icon={HelpCircle} label="Help and feedback" />
+              <SLRow icon={Heart}      label="Invite a contact"  />
+            </SCard>
+
+            {/* Log out — standalone pill */}
+            <button className="flex w-full items-center gap-4 rounded-2xl border border-border bg-card px-4 py-4 transition-colors hover:bg-muted/40 active:bg-muted/60">
+              <LogOut className="h-5 w-5 text-destructive" />
+              <span className="text-[15px] font-medium text-destructive">Log out</span>
+            </button>
+
           </div>
 
           <BottomNav tab={tab} onTab={onTab} />
         </div>
       )}
+
     </Animated>
   );
 }
 
-// ─── Sub-page shell ───────────────────────────────────────────────────────────
-function SubPage({ title, onBack, tab, onTab, children }: {
+// ─── Settings sub-page shell ──────────────────────────────────────────────────
+function SettingsSubPage({ title, onBack, tab, onTab, children }: {
   title: string; onBack: () => void; tab: Tab; onTab: (t: Tab) => void; children: React.ReactNode;
 }) {
   return (
-    <div className="relative h-full overflow-y-auto pb-32">
-      <div className="sticky top-0 z-10 flex items-center gap-3 border-b bg-background/90 px-4 py-3 backdrop-blur">
-        <button onClick={onBack} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted transition-colors">
-          <ChevronLeft className="h-6 w-6" />
+    <div className="relative h-full overflow-y-auto pb-32 bg-background">
+      <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-background/90 px-4 py-3 backdrop-blur">
+        <button onClick={onBack} className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted transition-colors">
+          <ChevronLeft className="h-5 w-5" />
         </button>
-        <h1 className="text-xl font-semibold">{title}</h1>
+        <h1 className="text-[17px] font-semibold">{title}</h1>
+        <div className="w-9" />
       </div>
-      <div className="p-4 space-y-3">{children}</div>
+      <div className="space-y-5 px-4 pt-5">{children}</div>
       <BottomNav tab={tab} onTab={onTab} />
     </div>
   );
 }
 
-// ─── Settings components ──────────────────────────────────────────────────────
-function SGroup({ label, children }: { label?: string; children: React.ReactNode }) {
+// ─── Settings primitives ──────────────────────────────────────────────────────
+function SCard({ label, children }: { label?: string; children: React.ReactNode }) {
   return (
     <div>
-      {label && <p className="mb-1.5 px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>}
-      <div className="overflow-hidden rounded-2xl border bg-card divide-y">{children}</div>
+      {label && <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>}
+      <div className="overflow-hidden rounded-2xl border bg-card divide-y divide-border/60">{children}</div>
     </div>
   );
 }
 
-function LRow({ color, icon: Icon, label, value, badge, onPress }: {
-  color: keyof typeof iconColors; icon: React.ElementType; label: string;
-  value?: string; badge?: string; onPress?: () => void;
+// Plain link row — icon in muted circle, label, optional right value / badge
+function SLRow({ icon: Icon, label, value, badge, onPress }: {
+  icon: React.ElementType; label: string; value?: string; badge?: string; onPress?: () => void;
 }) {
   return (
-    <button onClick={onPress} className="flex w-full items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/40 active:bg-muted/60">
-      <IconBadge color={color} icon={Icon} />
-      <span className="flex-1 text-left text-[15px] font-medium">{label}</span>
-      {badge && <span className="rounded-full bg-red-500 px-2 py-0.5 text-[11px] font-bold text-white">{badge}</span>}
+    <button onClick={onPress}
+      className="flex w-full items-center gap-4 px-4 py-3.5 transition-colors hover:bg-muted/40 active:bg-muted/60">
+      <Icon className="h-5 w-5 shrink-0 text-foreground/70" />
+      <span className="flex-1 text-left text-[15px]">{label}</span>
+      {badge && (
+        <span className="mr-1 rounded-full bg-primary px-2 py-0.5 text-[11px] font-bold text-primary-foreground">
+          {badge}
+        </span>
+      )}
       {value && <span className="text-sm text-muted-foreground">{value}</span>}
-      <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+      <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40" />
     </button>
   );
 }
 
-function TRow({ color, icon: Icon, label, value, onChange }: {
-  color: keyof typeof iconColors; icon: React.ElementType; label: string;
-  value: boolean; onChange: (v: boolean) => void;
+// Toggle row
+function STRow({ icon: Icon, label, value, onChange }: {
+  icon: React.ElementType; label: string; value: boolean; onChange: (v: boolean) => void;
 }) {
   return (
-    <div className="flex w-full items-center gap-3 px-4 py-3">
-      <IconBadge color={color} icon={Icon} />
-      <span className="flex-1 text-[15px] font-medium">{label}</span>
-      <button
-        role="switch" aria-checked={value} onClick={() => onChange(!value)}
-        className={`relative inline-flex h-[30px] w-[52px] shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 ${value ? "bg-green-500" : "bg-muted-foreground/25"}`}
-      >
-        <span className={`inline-block h-[26px] w-[26px] transform rounded-full bg-white shadow-md transition-transform duration-200 ${value ? "translate-x-[23px]" : "translate-x-[2px]"}`} />
+    <div className="flex w-full items-center gap-4 px-4 py-3.5">
+      <Icon className="h-5 w-5 shrink-0 text-foreground/70" />
+      <span className="flex-1 text-[15px]">{label}</span>
+      <button role="switch" aria-checked={value} onClick={() => onChange(!value)}
+        className={`relative inline-flex h-[30px] w-[52px] shrink-0 cursor-pointer rounded-full transition-colors duration-200 ${value ? "bg-green-500" : "bg-muted-foreground/30"}`}>
+        <span className={`absolute top-[2px] h-[26px] w-[26px] rounded-full bg-white shadow transition-all duration-200 ${value ? "left-[23px]" : "left-[2px]"}`} />
       </button>
     </div>
   );
