@@ -3,6 +3,11 @@ import { useState } from "react";
 import {
   Bell, Search, Plus, ChevronLeft, Phone, Video, MoreHorizontal, Smile, Mic,
   Send, Play, CheckCheck, Check, CircleDashed, MessagesSquare, Settings,
+  PhoneCall, PhoneIncoming, PhoneMissed, PhoneOutgoing, Clock,
+  User, ChevronRight, Moon, Bell as BellIcon, Shield, Lock, HelpCircle,
+  LogOut, Palette, Globe, MessageSquare, Camera, Edit2, Star, Archive,
+  Trash2, Volume2, Vibrate, BellOff, Fingerprint, Eye, Database,
+  Info, ChevronDown,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -38,7 +43,29 @@ const chats = [
   { name: "Kevin Howard", msg: "See you tomorrow", time: "7:55 AM", img: av("women", 33) },
 ];
 
+type CallEntry = {
+  name: string;
+  img: string;
+  type: "incoming" | "outgoing" | "missed";
+  kind: "voice" | "video";
+  date: string;
+  duration?: string;
+};
+
+const calls: CallEntry[] = [
+  { name: "Marvin McKinney", img: av("men", 11), type: "incoming", kind: "voice", date: "Today", duration: "12:34" },
+  { name: "Courtney Henry", img: av("women", 44), type: "outgoing", kind: "video", date: "Today", duration: "4:02" },
+  { name: "Robert Fox", img: av("men", 75), type: "missed", kind: "voice", date: "Yesterday" },
+  { name: "Arlene McCoy", img: av("men", 52), type: "outgoing", kind: "voice", date: "Yesterday", duration: "28:11" },
+  { name: "Jsne Cooper", img: av("women", 65), type: "incoming", kind: "video", date: "Yesterday", duration: "7:55" },
+  { name: "Dianne Russell", img: av("women", 21), type: "missed", kind: "voice", date: "Mon, Oct 28" },
+  { name: "Kevin Howard", img: av("women", 33), type: "outgoing", kind: "voice", date: "Mon, Oct 28", duration: "3:18" },
+  { name: "Waren", img: av("men", 45), type: "incoming", kind: "voice", date: "Sun, Oct 27", duration: "1:05" },
+];
+
 type Msg = { me: boolean; text?: string; time: string; voice?: boolean };
+
+type Tab = "updates" | "calls" | "chats" | "settings";
 
 function Avatar({ src, size = 56, online }: { src: string; size?: number; online?: boolean }) {
   return (
@@ -49,16 +76,484 @@ function Avatar({ src, size = 56, online }: { src: string; size?: number; online
   );
 }
 
+function BottomNav({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
+  return (
+    <nav className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full border bg-background/85 p-1.5 shadow-xl backdrop-blur-md">
+      {([
+        { id: "updates" as Tab, l: "Updates", I: CircleDashed, dot: true },
+        { id: "calls" as Tab, l: "Calls", I: Phone },
+        { id: "chats" as Tab, l: "Chats", I: MessagesSquare, badge: 2 },
+        { id: "settings" as Tab, l: "Settings", I: Settings },
+      ] as const).map(({ id, l, I, dot, badge }) => (
+        <button
+          key={id}
+          onClick={() => onTab(id)}
+          className={`relative flex w-20 flex-col items-center gap-0.5 rounded-full py-2 text-xs font-medium ${tab === id ? "bg-muted text-foreground" : "text-muted-foreground"}`}
+        >
+          <I className="h-6 w-6" />
+          {dot && <span className="absolute right-6 top-1.5 h-2.5 w-2.5 rounded-full bg-online" />}
+          {badge && <span className="absolute right-3 top-0.5 rounded-full bg-primary px-1.5 text-[10px] font-semibold text-primary-foreground">{badge}</span>}
+          {l}
+        </button>
+      ))}
+    </nav>
+  );
+}
+
 function Index() {
+  const [tab, setTab] = useState<Tab>("chats");
   const [open, setOpen] = useState<number | null>(null);
+
   return (
     <div className="mx-auto h-dvh max-w-2xl overflow-hidden bg-background">
-      {open === null ? <ChatList onOpen={setOpen} /> : <Conversation c={chats[open]!} onBack={() => setOpen(null)} />}
+      {tab === "chats" && open === null && <ChatList onOpen={setOpen} tab={tab} onTab={setTab} />}
+      {tab === "chats" && open !== null && <Conversation c={chats[open]!} onBack={() => setOpen(null)} />}
+      {tab === "calls" && <CallsPage tab={tab} onTab={setTab} />}
+      {tab === "settings" && <SettingsPage tab={tab} onTab={setTab} />}
+      {tab === "updates" && <UpdatesPage tab={tab} onTab={setTab} />}
     </div>
   );
 }
 
-function ChatList({ onOpen }: { onOpen: (i: number) => void }) {
+// ─── Updates (placeholder, same style) ───────────────────────────────────────
+function UpdatesPage({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
+  const statuses = [
+    { name: "Marvin McKinney", img: av("men", 11), time: "2 min ago", seen: false },
+    { name: "Courtney Henry", img: av("women", 44), time: "15 min ago", seen: false },
+    { name: "Robert Fox", img: av("men", 75), time: "1 hr ago", seen: true },
+    { name: "Arlene McCoy", img: av("men", 52), time: "3 hrs ago", seen: true },
+    { name: "Jsne Cooper", img: av("women", 65), time: "5 hrs ago", seen: true },
+  ];
+  return (
+    <div className="relative h-full overflow-y-auto pb-32">
+      <div className="flex items-center justify-between px-5 pt-5">
+        <h1 className="text-3xl font-semibold">Updates</h1>
+        <div className="flex items-center gap-3">
+          <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted"><Camera className="h-5 w-5" /></button>
+          <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted"><Edit2 className="h-5 w-5" /></button>
+        </div>
+      </div>
+
+      {/* My status */}
+      <div className="mx-5 mt-5">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">My Status</p>
+        <div className="flex items-center gap-4">
+          <div className="relative shrink-0">
+            <Avatar src={av("men", 86)} size={56} />
+            <span className="absolute bottom-0 right-0 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
+              <Plus className="h-3 w-3" />
+            </span>
+          </div>
+          <div>
+            <p className="font-medium">My status</p>
+            <p className="text-sm text-muted-foreground">Tap to add status update</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent updates */}
+      <div className="mt-6 px-5">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recent Updates</p>
+      </div>
+      <ul>
+        {statuses.filter(s => !s.seen).map((s) => (
+          <li key={s.name} className="flex cursor-pointer items-center gap-4 pl-5 hover:bg-muted/50">
+            <div className="relative shrink-0">
+              <div className="h-14 w-14 rounded-full p-[3px]" style={{ background: "conic-gradient(var(--color-primary) 0%, var(--color-primary) 70%, var(--color-muted) 70%)" }}>
+                <img src={s.img} alt="" className="h-full w-full rounded-full object-cover" />
+              </div>
+            </div>
+            <div className="flex flex-1 items-center border-b py-4 pr-5">
+              <div className="flex-1">
+                <p className="font-medium">{s.name}</p>
+                <p className="text-sm text-muted-foreground">{s.time}</p>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-2 px-5">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Viewed Updates</p>
+      </div>
+      <ul>
+        {statuses.filter(s => s.seen).map((s) => (
+          <li key={s.name} className="flex cursor-pointer items-center gap-4 pl-5 hover:bg-muted/50">
+            <div className="relative shrink-0">
+              <div className="h-14 w-14 rounded-full p-[3px]" style={{ background: "conic-gradient(var(--color-muted-foreground) 0%, var(--color-muted-foreground) 100%)" }}>
+                <img src={s.img} alt="" className="h-full w-full rounded-full object-cover ring-2 ring-background" />
+              </div>
+            </div>
+            <div className="flex flex-1 items-center border-b py-4 pr-5">
+              <div className="flex-1">
+                <p className="font-medium text-muted-foreground">{s.name}</p>
+                <p className="text-sm text-muted-foreground">{s.time}</p>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <BottomNav tab={tab} onTab={onTab} />
+    </div>
+  );
+}
+
+// ─── Calls ────────────────────────────────────────────────────────────────────
+function CallsPage({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
+  const [filter, setFilter] = useState<"all" | "missed">("all");
+
+  const filtered = filter === "missed" ? calls.filter(c => c.type === "missed") : calls;
+
+  const grouped = filtered.reduce<Record<string, CallEntry[]>>((acc, c) => {
+    if (!acc[c.date]) acc[c.date] = [];
+    acc[c.date]!.push(c);
+    return acc;
+  }, {});
+
+  const CallIcon = ({ type }: { type: CallEntry["type"] }) => {
+    if (type === "incoming") return <PhoneIncoming className="h-4 w-4 text-online" />;
+    if (type === "outgoing") return <PhoneOutgoing className="h-4 w-4 text-muted-foreground" />;
+    return <PhoneMissed className="h-4 w-4 text-destructive" />;
+  };
+
+  return (
+    <div className="relative h-full overflow-y-auto pb-32">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pt-5">
+        <h1 className="text-3xl font-semibold">Calls</h1>
+        <div className="flex items-center gap-2">
+          <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
+            <Search className="h-5 w-5" />
+          </button>
+          <button className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow">
+            <PhoneCall className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Filter pills */}
+      <div className="flex gap-2 px-5 pt-4">
+        {(["all", "missed"] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`rounded-full px-4 py-1.5 text-sm font-medium capitalize transition-colors ${filter === f ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+          >
+            {f === "all" ? "All" : "Missed"}
+          </button>
+        ))}
+      </div>
+
+      {/* Favourites quick-dial */}
+      <div className="mt-5 px-5">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Favourites</p>
+        <div className="flex gap-5 overflow-x-auto pb-1">
+          {chats.slice(0, 4).map((c) => (
+            <button key={c.name} className="flex flex-col items-center gap-1.5">
+              <Avatar src={c.img} size={54} online />
+              <span className="w-14 truncate text-center text-xs font-medium">{c.name.split(" ")[0]}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Call log */}
+      <div className="mt-5">
+        {Object.entries(grouped).map(([date, entries]) => (
+          <div key={date}>
+            <p className="px-5 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{date}</p>
+            <ul>
+              {entries.map((c, i) => (
+                <li key={i} className="flex items-center gap-4 pl-5 hover:bg-muted/50">
+                  <Avatar src={c.img} size={50} />
+                  <div className="flex flex-1 items-center border-b py-3.5 pr-5">
+                    <div className="flex-1">
+                      <p className={`font-medium ${c.type === "missed" ? "text-destructive" : ""}`}>{c.name}</p>
+                      <div className="mt-0.5 flex items-center gap-1.5">
+                        <CallIcon type={c.type} />
+                        <span className="text-sm text-muted-foreground capitalize">{c.kind} call</span>
+                        {c.duration && (
+                          <>
+                            <span className="text-muted-foreground">·</span>
+                            <Clock className="h-3 w-3 text-muted-foreground" />
+                            <span className="text-sm text-muted-foreground">{c.duration}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
+                        {c.kind === "voice" ? <Phone className="h-5 w-5 text-primary" /> : <Video className="h-5 w-5 text-primary" />}
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <BottomNav tab={tab} onTab={onTab} />
+    </div>
+  );
+}
+
+// ─── Settings ─────────────────────────────────────────────────────────────────
+type SettingsSection = "main" | "notifications" | "privacy" | "appearance";
+
+function SettingsPage({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
+  const [section, setSection] = useState<SettingsSection>("main");
+  const [darkMode, setDarkMode] = useState(false);
+  const [notifSound, setNotifSound] = useState(true);
+  const [notifVibrate, setNotifVibrate] = useState(true);
+  const [notifPreview, setNotifPreview] = useState(true);
+  const [muteAll, setMuteAll] = useState(false);
+  const [lastSeen, setLastSeen] = useState(true);
+  const [readReceipts, setReadReceipts] = useState(true);
+  const [onlineStatus, setOnlineStatus] = useState(true);
+  const [biometric, setBiometric] = useState(false);
+
+  if (section === "notifications") {
+    return (
+      <div className="relative h-full overflow-y-auto pb-32">
+        <div className="flex items-center gap-3 border-b bg-background/90 px-4 py-3 backdrop-blur">
+          <button onClick={() => setSection("main")} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <h1 className="text-xl font-semibold">Notifications</h1>
+        </div>
+        <div className="p-5 space-y-3">
+          <SettingsGroup label="Messages">
+            <ToggleRow icon={Volume2} label="Sound" value={notifSound} onChange={setNotifSound} />
+            <ToggleRow icon={Vibrate} label="Vibration" value={notifVibrate} onChange={setNotifVibrate} />
+            <ToggleRow icon={Eye} label="Show Preview" value={notifPreview} onChange={setNotifPreview} />
+          </SettingsGroup>
+          <SettingsGroup label="General">
+            <ToggleRow icon={BellOff} label="Mute All Notifications" value={muteAll} onChange={setMuteAll} />
+          </SettingsGroup>
+          <SettingsGroup label="Calls">
+            <ToggleRow icon={Phone} label="Incoming Call Ringtone" value={true} onChange={() => {}} />
+            <ToggleRow icon={Vibrate} label="Vibrate on Call" value={true} onChange={() => {}} />
+          </SettingsGroup>
+        </div>
+        <BottomNav tab={tab} onTab={onTab} />
+      </div>
+    );
+  }
+
+  if (section === "privacy") {
+    return (
+      <div className="relative h-full overflow-y-auto pb-32">
+        <div className="flex items-center gap-3 border-b bg-background/90 px-4 py-3 backdrop-blur">
+          <button onClick={() => setSection("main")} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <h1 className="text-xl font-semibold">Privacy & Security</h1>
+        </div>
+        <div className="p-5 space-y-3">
+          <SettingsGroup label="Visibility">
+            <ToggleRow icon={Clock} label="Last Seen" value={lastSeen} onChange={setLastSeen} />
+            <ToggleRow icon={CheckCheck} label="Read Receipts" value={readReceipts} onChange={setReadReceipts} />
+            <ToggleRow icon={User} label="Online Status" value={onlineStatus} onChange={setOnlineStatus} />
+          </SettingsGroup>
+          <SettingsGroup label="Security">
+            <ToggleRow icon={Fingerprint} label="Biometric Lock" value={biometric} onChange={setBiometric} />
+            <LinkRow icon={Lock} label="Two-Step Verification" />
+            <LinkRow icon={Shield} label="Blocked Contacts" badge="3" />
+          </SettingsGroup>
+          <SettingsGroup label="Data">
+            <LinkRow icon={Database} label="Manage Storage" />
+            <LinkRow icon={Archive} label="Chat Backup" />
+          </SettingsGroup>
+        </div>
+        <BottomNav tab={tab} onTab={onTab} />
+      </div>
+    );
+  }
+
+  if (section === "appearance") {
+    return (
+      <div className="relative h-full overflow-y-auto pb-32">
+        <div className="flex items-center gap-3 border-b bg-background/90 px-4 py-3 backdrop-blur">
+          <button onClick={() => setSection("main")} className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <h1 className="text-xl font-semibold">Appearance</h1>
+        </div>
+        <div className="p-5 space-y-3">
+          <SettingsGroup label="Theme">
+            <ToggleRow icon={Moon} label="Dark Mode" value={darkMode} onChange={setDarkMode} />
+          </SettingsGroup>
+          <SettingsGroup label="Chat Wallpaper">
+            <div className="grid grid-cols-3 gap-3 pt-1">
+              {["oklch(0.975 0.006 85)", "oklch(0.965 0.012 200)", "oklch(0.96 0.02 320)", "oklch(0.97 0.01 150)", "oklch(0.96 0.015 40)", "oklch(0.95 0.005 260)"].map((bg, i) => (
+                <button
+                  key={i}
+                  className={`h-16 rounded-xl border-2 transition-all ${i === 0 ? "border-primary shadow-md" : "border-transparent"}`}
+                  style={{ background: bg }}
+                />
+              ))}
+            </div>
+          </SettingsGroup>
+          <SettingsGroup label="Font Size">
+            <div className="flex items-center gap-4 px-1 py-2">
+              <span className="text-xs text-muted-foreground">A</span>
+              <div className="relative flex-1">
+                <div className="h-1.5 w-full rounded-full bg-muted">
+                  <div className="h-1.5 w-1/2 rounded-full bg-primary" />
+                </div>
+                <div className="absolute top-1/2 left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary bg-background shadow" />
+              </div>
+              <span className="text-lg text-muted-foreground">A</span>
+            </div>
+          </SettingsGroup>
+          <SettingsGroup label="Language">
+            <LinkRow icon={Globe} label="App Language" value="English" />
+          </SettingsGroup>
+        </div>
+        <BottomNav tab={tab} onTab={onTab} />
+      </div>
+    );
+  }
+
+  // Main settings
+  return (
+    <div className="relative h-full overflow-y-auto pb-32">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 pt-5">
+        <h1 className="text-3xl font-semibold">Settings</h1>
+        <button className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted">
+          <Search className="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* Profile card */}
+      <div className="mx-5 mt-5 flex items-center gap-4 rounded-2xl bg-muted/60 p-4">
+        <div className="relative">
+          <Avatar src={av("men", 86)} size={64} />
+          <button className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow">
+            <Camera className="h-3.5 w-3.5" />
+          </button>
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-lg font-semibold">Alex Johnson</p>
+          <p className="text-sm text-muted-foreground truncate">Available</p>
+          <p className="text-xs text-muted-foreground mt-0.5">+1 (555) 012-3456</p>
+        </div>
+        <button className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
+          <Edit2 className="h-4 w-4 text-muted-foreground" />
+        </button>
+      </div>
+
+      {/* Settings groups */}
+      <div className="mt-5 px-5 space-y-3">
+        <SettingsGroup>
+          <LinkRow icon={BellIcon} label="Notifications" onPress={() => setSection("notifications")} />
+          <LinkRow icon={Palette} label="Appearance" onPress={() => setSection("appearance")} />
+          <LinkRow icon={Globe} label="Language" value="English" />
+        </SettingsGroup>
+
+        <SettingsGroup>
+          <LinkRow icon={Shield} label="Privacy & Security" onPress={() => setSection("privacy")} />
+          <LinkRow icon={Lock} label="Two-Step Verification" />
+          <LinkRow icon={Fingerprint} label="Fingerprint Lock" />
+        </SettingsGroup>
+
+        <SettingsGroup>
+          <LinkRow icon={Database} label="Storage & Data" />
+          <LinkRow icon={Archive} label="Chat Backup" />
+          <LinkRow icon={MessageSquare} label="Chat History" />
+        </SettingsGroup>
+
+        <SettingsGroup>
+          <LinkRow icon={Star} label="Rate Us" />
+          <LinkRow icon={HelpCircle} label="Help & Support" />
+          <LinkRow icon={Info} label="About" value="v2.4.1" />
+        </SettingsGroup>
+
+        {/* Danger zone */}
+        <button className="flex w-full items-center gap-3 rounded-2xl bg-destructive/8 px-4 py-3.5 text-destructive transition-colors hover:bg-destructive/12">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-destructive/10">
+            <LogOut className="h-4.5 w-4.5" />
+          </div>
+          <span className="font-medium">Log Out</span>
+        </button>
+      </div>
+
+      <BottomNav tab={tab} onTab={onTab} />
+    </div>
+  );
+}
+
+// ─── Settings sub-components ──────────────────────────────────────────────────
+function SettingsGroup({ label, children }: { label?: string; children: React.ReactNode }) {
+  return (
+    <div>
+      {label && <p className="mb-1.5 px-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>}
+      <div className="overflow-hidden rounded-2xl border bg-card">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function LinkRow({
+  icon: Icon, label, value, badge, onPress,
+}: {
+  icon: React.ElementType;
+  label: string;
+  value?: string;
+  badge?: string;
+  onPress?: () => void;
+}) {
+  return (
+    <button
+      onClick={onPress}
+      className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/50 [&:not(:last-child)]:border-b"
+    >
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted">
+        <Icon className="h-4.5 w-4.5" />
+      </div>
+      <span className="flex-1 text-left font-medium">{label}</span>
+      {badge && <span className="rounded-full bg-destructive px-2 py-0.5 text-xs font-semibold text-destructive-foreground">{badge}</span>}
+      {value && <span className="text-sm text-muted-foreground">{value}</span>}
+      <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+    </button>
+  );
+}
+
+function ToggleRow({
+  icon: Icon, label, value, onChange,
+}: {
+  icon: React.ElementType;
+  label: string;
+  value: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <div className="flex w-full items-center gap-3 px-4 py-3.5 [&:not(:last-child)]:border-b">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted">
+        <Icon className="h-4.5 w-4.5" />
+      </div>
+      <span className="flex-1 font-medium">{label}</span>
+      <button
+        role="switch"
+        aria-checked={value}
+        onClick={() => onChange(!value)}
+        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors ${value ? "bg-primary" : "bg-muted-foreground/30"}`}
+      >
+        <span
+          className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform ${value ? "translate-x-5" : "translate-x-0.5"}`}
+        />
+      </button>
+    </div>
+  );
+}
+
+// ─── Chat list ────────────────────────────────────────────────────────────────
+function ChatList({ onOpen, tab, onTab }: { onOpen: (i: number) => void; tab: Tab; onTab: (t: Tab) => void }) {
   return (
     <div className="relative h-full overflow-y-auto pb-32">
       <div className="flex items-center justify-between px-5 pt-5">
@@ -99,25 +594,12 @@ function ChatList({ onOpen }: { onOpen: (i: number) => void }) {
           </li>
         ))}
       </ul>
-      <nav className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full border bg-background/85 p-1.5 shadow-xl backdrop-blur-md">
-        {[
-          { l: "Updates", I: CircleDashed, dot: true },
-          { l: "Calls", I: Phone },
-          { l: "Chats", I: MessagesSquare, badge: 2, active: true },
-          { l: "Settings", I: Settings },
-        ].map(({ l, I, dot, badge, active }) => (
-          <button key={l} className={`relative flex w-20 flex-col items-center gap-0.5 rounded-full py-2 text-xs font-medium ${active ? "bg-muted text-foreground" : "text-muted-foreground"}`}>
-            <I className="h-6 w-6" />
-            {dot && <span className="absolute right-6 top-1.5 h-2.5 w-2.5 rounded-full bg-online" />}
-            {badge && <span className="absolute right-3 top-0.5 rounded-full bg-primary px-1.5 text-[10px] font-semibold text-primary-foreground">{badge}</span>}
-            {l}
-          </button>
-        ))}
-      </nav>
+      <BottomNav tab={tab} onTab={onTab} />
     </div>
   );
 }
 
+// ─── Conversation ─────────────────────────────────────────────────────────────
 function Conversation({ c, onBack }: { c: (typeof chats)[number]; onBack: () => void }) {
   const [msgs, setMsgs] = useState<Msg[]>([
     { me: true, text: "Hi, Ready to Begin! Everything's set up and your tasks are in place. Jump in, stay motivated, and start making real progress on your goals today!", time: "10:29 AM" },
