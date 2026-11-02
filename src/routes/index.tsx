@@ -145,7 +145,6 @@ function Conversation({ c, onBack }: { c: (typeof chats)[number]; onBack: () => 
         {msgs.map((m, i) =>
           m.voice ? (
             <div key={i} className="flex items-end gap-2">
-              <Avatar src={c.img} size={32} />
               <div className="w-72 max-w-[75%] rounded-3xl rounded-bl-md bg-bubble px-3 py-2.5 text-foreground">
                 <div className="flex items-center gap-3">
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"><Play className="h-5 w-5 fill-current" /></span>
@@ -166,13 +165,13 @@ function Conversation({ c, onBack }: { c: (typeof chats)[number]; onBack: () => 
           ),
         )}
       </div>
-      <div className="flex items-center gap-2 border-t bg-background px-3 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3">
-        <button className="flex h-12 w-12 items-center justify-center rounded-full border bg-muted"><Plus className="h-6 w-6" /></button>
-        <div className="flex flex-1 items-center gap-2 rounded-full border bg-muted px-4 py-2.5">
-          <input value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder="Message..." className="min-w-0 flex-1 bg-transparent text-lg outline-none" />
-          <Smile className="h-6 w-6" /><span className="h-6 w-px bg-border" /><Mic className="h-6 w-6" />
+      <div className="flex items-center gap-2 border-t bg-background px-3 pb-[max(1.5rem,calc(env(safe-area-inset-bottom)+0.5rem))] pt-3">
+        <button className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border bg-muted"><Plus className="h-6 w-6" /></button>
+        <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full border bg-muted px-3 py-2.5">
+          <input value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder="Message..." className="min-w-0 flex-1 bg-transparent text-base outline-none" />
+          <Smile className="h-5 w-5 shrink-0" /><span className="h-5 w-px shrink-0 bg-border" /><Mic className="h-5 w-5 shrink-0" />
         </div>
-        <button onClick={send} className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground"><Send className="h-5 w-5" /></button>
+        <button onClick={send} className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"><Send className="h-5 w-5" /></button>
       </div>
     </div>
   );
