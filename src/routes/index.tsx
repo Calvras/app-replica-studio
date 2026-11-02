@@ -53,7 +53,7 @@ function Index() {
   const [open, setOpen] = useState<number | null>(null);
   return (
     <div className="mx-auto h-screen max-w-2xl overflow-hidden bg-background">
-      {open === null ? <ChatList onOpen={setOpen} /> : <Conversation c={chats[open]} onBack={() => setOpen(null)} />}
+      {open === null ? <ChatList onOpen={setOpen} /> : <Conversation c={chats[open]!} onBack={() => setOpen(null)} />}
     </div>
   );
 }
